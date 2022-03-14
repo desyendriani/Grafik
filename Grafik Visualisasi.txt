@@ -1,0 +1,128 @@
+#Visualisasi Jumlah Tweet
+
+from google.colab import drive
+drive.mount('/content/gdrive')
+
+import os
+
+path = "gdrive/MyDrive/skripsi revisi/"
+os.listdir(path)
+
+import pandas as pd
+data = pd.read_csv(path+'fix PPKM1.csv')
+data.head()
+
+# importing pandas
+import pandas as pd
+  
+# merging two csv files
+df = pd.concat(
+    map(pd.read_csv, [path+'PPKM1.csv', path+'Kebijakan PPKM2.csv', path+'Kepanjangan PPKM1.csv']), ignore_index=True)
+print(df)
+
+data['content_length'] = data['text'].str.len()
+
+# Import some libraries
+
+import pandas as pd
+pd.options.mode.chained_assignment = None
+import numpy as np
+seed = 0
+np.random.seed(seed)
+import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set(style = 'whitegrid')
+
+!pip install twint
+import twint
+import nest_asyncio
+nest_asyncio.apply()
+
+
+import datetime as dt
+import re
+import string
+from wordcloud import WordCloud
+
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from keras.models import Sequential
+from keras.layers import Embedding, Dense, Dropout, LSTM
+from tensorflow.keras.optimizers import Adam,Nadam, SGD
+from keras.callbacks import EarlyStopping
+from keras.wrappers.scikit_learn import KerasClassifier
+from sklearn.model_selection import GridSearchCV
+from mlxtend.plotting import plot_confusion_matrix
+from sklearn.metrics import confusion_matrix
+
+
+
+data.dtypes
+
+data['created_at'] = pd.to_datetime(data['created_at'])
+
+# create a copy of the dataframe
+data_time = data.copy()
+
+# set the timestamp column as the index and delete the column
+data_time.index = data_time['created_at']
+del data_time['created_at']
+
+data_time.head()
+
+print('Total tweets in 2021:', data_time['2021']['author_id'].count())
+
+# create a yearly overview for all features
+# resample('AS') resamples the time series data using year start as the period
+(data_time!=0).resample('M').sum()
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+%matplotlib inline
+
+# create new columns based on timestamp
+data['month'] = data['created_at'].dt.month
+data['weekdaynum'] = data['created_at'].dt.dayofweek
+data['weekday'] = data['created_at'].dt.day_name()
+data['monthdaynum'] = data['created_at'].dt.day
+data['hourofday'] = data['created_at'].dt.hour
+
+# create a bar plot with weekdays
+data.pivot_table(index=['month'],values='author_id',aggfunc='count').plot(kind='bar',figsize=(12,8),color='skyblue')
+
+# set the labels and title
+plt.ylabel('Total tweets sent')
+plt.xlabel('Month')
+plt.title('Tweets sent by month');
+
+#Visualisasi Frekuensi jumlah Kata
+import pandas as pd
+text = pd.read_csv(path+'PPKM fixxx.csv', sep=';')
+text.head()
+
+text.info()
+
+import re
+def tokenize(text):
+    tokens = re.split('\W+', text) #W+ means that either a word character (A-Za-z0-9_) or a dash (-) can go there.
+    return tokens
+
+text['text'] = text['text'].apply(lambda x: tokenize(x.lower())) 
+text.head()
+
+from collections import Counter
+top = Counter([item for sublist in text['text'] for item in sublist])
+temp = pd.DataFrame(top.most_common(25))
+temp = temp.iloc[1:,:]
+temp.columns = ['Common_words','count']
+temp.style.background_gradient(cmap='Blues')
+
+import plotly.express as px
+
+fig = px.bar(temp, x="count", y="Common_words", title='Commmon Words in Text', orientation='h', 
+             width=700, height=700,color='Common_words')
+fig.show()
